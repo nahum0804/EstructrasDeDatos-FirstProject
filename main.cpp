@@ -8,6 +8,7 @@ using namespace std;
 struct Journey {
     string date;     // Date of the workday
     string hours;    // Hours worked on the workday
+    string modality; // Modality of the workday (e.g., normal, extra, double, etc.)
 
     Journey *next;   // Pointer to the next Journey in a list
 };
@@ -56,49 +57,78 @@ struct Employee {
 
 
 // Inventory System Structs
+struct Material{
+    string name;
+    Material *next;
+    Material *previous;
+
+    Material(string _name){
+        name = _name;
+        next = NULL;
+        previous = NULL;
+    }   
+};
+
 // Define a struct to represent a Product
 struct Product {
     string name;        // Product name
     string id;          // Product ID or identification number
     string description; // Product description
-    string productionStage // Product production stage
+    string productionStage; // Product production stage
 
-    Products *next;     // Pointer to the next Product in a list
+    Product *next;     // Pointer to the next Product in a list
+    Product *previous;
 
     // Constructor to initialize a Product object   --  Config circular list
-    Products(string _name, string _id, string _description, string _quantity)
+    Product(string _name, string _id, string _description)
     {
         // Initialize Product properties
         name = _name;
         id = _id;
         description = _description;
-        quantity = _quantity;
 
         // Initialize pointers to NULL
         next = NULL;
+        previous = NULL;
     }
 };
 
 
 //---------------------------- Functions for program --------------------------
 
-// Employee System Functions
+void addData(){
+    // Employee data
+    Employee *employee1 = new Employee("Juan", "Perez", "123456789", 25, "Gerente", "Gerencia", "juan@corro.com", "12345678", "Mensual", "1000000");
+    Employee *employee2 = new Employee("Maria", "Gonzalez", "987654321", 30, "Gerente", "Gerencia", "maria@correo", "87654321", "Mensual", "1000000");
+    Employee *employee3 = new Employee("Pedro", "Garcia", "123456789", 25, "Gerente", "Gerencia", "pedro@correo", "12345678", "Mensual", "1000000");
+
+    // Inventory data
+    Material *material1 = new Material("Silicon");
+    Material *material2 = new Material("Plastic");
+    Material *material3 = new Material("Copper");
+    Material *material4 = new Material("Steel");
+    Material *material5 = new Material("Aluminum");
+    Material *material6 = new Material("Silicon");
+    //Add more Microprocessors materials
+}
+
+
+// Employee System Functions --------------------------------------------------
 void consultEmployee()
 {
     //Print menu options for consult employee
     cout << endl;
-    cout << endl;
-    cout << "Choose the option you want to consult:" << endl;
-    cout << endl;
-    cout << "1 - Consult month's salary amount" << endl;
-    cout << "2 - Consult this month's salary data" << endl;
-    cout << "3 - Consult an employee data" << endl;
-    cout << "4 - Consult an employee list sorted by age" << endl;
-    cout << "5 - Consult an employee list sorted by alphabetical order" << endl;
-    cout << "6 - Consult an subordinates list" << endl;
+ cout << endl;
+    cout << "Choose the option you want to perform:" << endl;
+    cout << "1 - Add a new employee" << endl;
+    cout << "2 - Modify an employee" << endl;
+    cout << "3 - Sort employees by alphabetic order" << endl;
+    cout << "4 - Sort employees by ag" << endl;
+    cout << "5 - Print employee list" << endl;
+    cout << "6 - Calculate salary for an employee" << endl;
     cout << "7 - Close menu" << endl;
 
-    //Chose the option
+    // Choose the option
     int option;
     cin >> option;
     cin.ignore();
@@ -106,29 +136,28 @@ void consultEmployee()
     switch (option)
     {
     case 1:
-        cout << "Consult month's salary amount" << endl;
-        // consultMonthSalaryAmount(); // <- Call the function to consult the month's salary amount
+        cout << "Add a new employee" << endl;
+        // addNewEmployee(); // <- Call the function to add a new employee
         break;
     case 2:
-        cout << "Consult this month's salary data" << endl;
-        // consultMonthSalaryData(); // <- Call the function to consult the month's salary data
+        cout << "Modify an employee" << endl;
+        // modifyEmployee(); // <- Call the function to modify an employee
         break;
     case 3:
-        cout << "Consult an employee data" << endl;
-        // consultEmployeeData(); // <- Call the function to consult an employee data
+        cout << "Sort employees by alphabetic order" << endl;
+        // sortEmployeesByAlphOrder(); // <- Call the function to sort employees by criteria 1
         break;
-
     case 4:
-        cout << "Consult an employee list sorted by age" << endl;
-        // consultEmployeeListByAge(); // <- Call the function to consult an employee list sorted by age
+        cout << "Sort employees by age" << endl;
+        // sortEmployeesByAge(); // <- Call the function to sort employees by criteria 2
         break;
-    case 5: 
-        cout << "Consult an employee list sorted by alphabetical order" << endl;
-        // consultEmployeeListByAlphabeticalOrder(); // <- Call the function to consult an employee list sorted by alphabetical order
+    case 5:
+        cout << "Print employee list" << endl;
+        // printEmployeeList(); // <- Call the function to print the employee list
         break;
     case 6:
-        cout << "Consult an subordinates list" << endl;
-        // consultSubordinatesList(); // <- Call the function to consult an subordinates list
+        cout << "Calculate salary for an employee" << endl;
+        // calculateSalary(); // <- Call the function to calculate salary for an employee
         break;
     case 7:
         cout << "Close menu" << endl;
@@ -139,22 +168,26 @@ void consultEmployee()
     }
 }
 
+// Employee System Functions --------------------------------------------------
 
 
-// Inventory System Functions
+// Inventory System Functions -------------------------------------------------
 void consultInventory()
 {
-    //Print menu options for consult inventory
+    // Print menu options for consult inventory
     cout << endl;
     cout << endl;
-    cout << "Choose the option you want to consult:" << endl;
-    cout << endl;
-    cout << "1 - Consult a product data" << endl;
+    cout << "Choose the option you want to perform:" << endl;
+    cout << "1 - Consult the stock" << endl;
     cout << "2 - Consult a product list sorted by quantity" << endl;
     cout << "3 - Consult a product list sorted by alphabetical order" << endl;
-    cout << "4 - Close menu" << endl;
+    cout << "4 - Add a new product" << endl;
+    cout << "5 - Increase stock for an existing product" << endl;
+    cout << "6 - Decrease stock for an existing product" << endl;
+    cout << "7 - Show stock by category" << endl;
+    cout << "8 - Close menu" << endl;
 
-    //Chose the option
+    // Choose the option
     int option;
     cin >> option;
     cin.ignore();
@@ -162,8 +195,8 @@ void consultInventory()
     switch (option)
     {
     case 1:
-        cout << "Consult a product data" << endl;
-        // consultProductData(); // <- Call the function to consult a product data
+        cout << "Consult the stock" << endl;
+        // consultStock(); // <- Call the function to consult the stock
         break;
     case 2:
         cout << "Consult a product list sorted by quantity" << endl;
@@ -174,6 +207,22 @@ void consultInventory()
         // consultProductListByAlphabeticalOrder(); // <- Call the function to consult a product list sorted by alphabetical order
         break;
     case 4:
+        cout << "Add a new product" << endl;
+        // addNewProduct(); // <- Call the function to add a new product
+        break;
+    case 5:
+        cout << "Increase stock for an existing product" << endl;
+        // increaseStock(); // <- Call the function to increase stock for an existing product
+        break;
+    case 6:
+        cout << "Decrease stock for an existing product" << endl;
+        // decreaseStock(); // <- Call the function to decrease stock for an existing product
+        break;
+    case 7:
+        cout << "Show stock by category" << endl;
+        // showStockByCategory(); // <- Call the function to show stock by category
+        break;
+    case 8:
         cout << "Close menu" << endl;
         // Only close the menu
         break;
@@ -181,22 +230,22 @@ void consultInventory()
         break;
     }
 }
+// Inventory System Functions -------------------------------------------------
 
 
-//Procution Line System Functions
+
+//Procution Line System Functions ---------------------------------------------
 void consultProductionLine()
 {
-    //Print menu options for consult production line
+    // Print menu options for consult production line
     cout << endl;
-    cout << endl;
-    cout << "Choose the option you want to consult:" << endl;
-    cout << endl;
+    cout << "Choose the option you want to perform:" << endl;
     cout << "1 - Consult a production line data" << endl;
     cout << "2 - Consult a specific product" << endl;
-    cout << "3 - Consult a production stage" << endl;
+    cout << "3 - Modify the state of a product" << endl;
     cout << "4 - Close menu" << endl;
 
-    //Chose the option
+    // Choose the option
     int option;
     cin >> option;
     cin.ignore();
@@ -208,12 +257,12 @@ void consultProductionLine()
         // consultProductionLineData(); // <- Call the function to consult a production line data
         break;
     case 2:
-        cout << "Consult a production line list sorted by quantity" << endl;
-        // consultProductionLineListByQuantity(); // <- Call the function to consult a production line list sorted by quantity
+        cout << "Consult a specific product" << endl;
+        // consultSpecificProduct(); // <- Call the function to consult a specific product
         break;
     case 3:
-        cout << "Consult a production line list sorted by alphabetical order" << endl;
-        // consultProductionLineListByAlphabeticalOrder(); // <- Call the function to consult a production line list sorted by alphabetical order
+        cout << "Modify the state of a product" << endl;
+        // modifyProductState(); // <- Call the function to modify the state of a product
         break;
     case 4:
         cout << "Close menu" << endl;
@@ -223,6 +272,7 @@ void consultProductionLine()
         break;
     }
 }
+//Procution Line System Functions ---------------------------------------------
 
 
 // ---------------------------- Functions for program --------------------------
@@ -236,13 +286,15 @@ void consultProductionLine()
 // ------------------------------- Main function --------------------------------
 int main()
 {
-    cout << "Menu" << endl;   
+    //addData(); // <- Call the function to add data to the program
+    cout << "Welcome to SiliconLogic - Your Job Information Portal" << endl;   
     cout << "What area of the company would you like to see?:" << endl;
     cout << endl;
     cout << "1 - View employee information" << endl;
     cout << "2 - Consult Inventory" << endl;
     cout << "3 - Check the Production Line" << endl;
     cout << "4 - Close menu" << endl;
+    cout << endl;
 
     //Chose the option
     int option;
