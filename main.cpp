@@ -11,6 +11,18 @@ struct Journey {
     string modality; // Modality of the workday (e.g., normal, extra, double, etc.)
 
     Journey *next;   // Pointer to the next Journey in a list
+
+    // Constructor to initialize a Journey object
+    Journey(string _date, string _hours, string _modality)
+    {
+        // Initialize Journey properties
+        date = _date;
+        hours = _hours;
+        modality = _modality;
+
+        // Initialize pointer to NULL
+        next = NULL;
+    }
 };
 
 
@@ -35,6 +47,7 @@ struct Employee {
 
     // Constructor to initialize an Employee object
     Employee(string _name, string _lastName, string _id, int _age, string _position, string _department, string _email, string _phone, string _modalityPay, string _salary)
+        : journeys("","","")
     {
         // Initialize Employee properties
         name = _name;
@@ -52,8 +65,11 @@ struct Employee {
         next = NULL;
         previous = NULL;
         boss = NULL;
+
+        // Initialize the list of Journeys
     }
-};
+} *headEmployee, *tailEmployee; 
+
 
 
 // Inventory System Structs
@@ -93,13 +109,81 @@ struct Product {
     }
 };
 
+//Prototypes 
+void consultEmployee();
+void consultInventory();
+void consultProductionLine();
+void addData();
+
+//Prototypes for Employee System
+void insertEmployee(Employee *employee);
+void recolectNewEmployeeData();
+void printEmployeeList();
+
+void modifyEmployee();
+void modifyEmployeeName(string id);
+void modifyEmployeeLastName(string id);
+void modifyEmployeeAge(string id);
+void modifyEmployeePosition(string id);
+void modifyEmployeeDepartment(string id);
+void modifyEmployeeEmail(string id);
+void modifyEmployeePhone(string id);
+void modifyEmployeeModalityPay(string id);
+void modifyEmployeeSalary(string id);
+void addJourney(string id, Journey *journey);
+
+
+
+
+//Prototypes for Inventory System
+
+
+//Prototypes for Production Line System
+
+
 
 //---------------------------- Functions for program --------------------------
 
+void insertJourney(string id, Journey *journey)
+{
+    //Search the employee
+    Employee *current = headEmployee;
+    if(current == NULL){
+        cout << "Employee not found" << endl;
+        return;
+    } else {
+        while(current != NULL){
+            if(current->id == id){
+                //Insert the journey like simple list
+                Journey *currentJourney = &current->journeys;
+                while(currentJourney->next != NULL){
+                    currentJourney = currentJourney->next;
+                }
+                currentJourney->next = journey;
+                cout << "Journey added successfully" << endl;
+            }
+            current = current->next;
+        }
+    }
+}
+
+
 void insertEmployee(Employee *employee)
 {
+    // Check if an employee with the same ID already exists
+    Employee *current = headEmployee;
+    while (current != nullptr)
+    {
+        if (current->id == employee->id)
+        {
+            cout << "Employee with ID " << employee->id << " already exists in the list." << endl;
+            return; // Exit the function if an employee with the same ID is found
+        }
+        current = current->next;
+    }
+
     // Insert employee in the bottom of the list
-    if (headEmployee == NULL)
+    if (headEmployee == nullptr)
     {
         headEmployee = employee;
         tailEmployee = employee;
@@ -110,7 +194,10 @@ void insertEmployee(Employee *employee)
         employee->previous = tailEmployee;
         tailEmployee = employee;
     }
+
+    cout << "Employee added successfully." << endl;
 }
+
 
 void recolectNewEmployeeData()
 {
@@ -157,13 +244,325 @@ void recolectNewEmployeeData()
 
 }
 
+//Print Employee List
+void printEmployeeList(){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        cout << "Name: " << current->name << endl;
+        cout << "Last Name: " << current->lastName << endl;
+        cout << "ID: " << current->id << endl;
+        cout << "Age: " << current->age << endl;
+        cout << "Position: " << current->position << endl;
+        cout << "Department: " << current->department << endl;
+        cout << "Email: " << current->email << endl;
+        cout << "Phone: " << current->phone << endl;
+        cout << "Modality Pay: " << current->modalityPay << endl;
+        cout << "Salary: " << current->salary << endl;
+        cout << endl;
+        current = current->next;
+    }
+
+    //Jump to the employee menu
+    consultEmployee();
+}
+
+//Modify Employee
+void modifyEmployee(){
+
+    //Get ID of the employee to modify
+    cout << "Insert the ID of the employee you want to modify: ";
+    string id;
+    getline(cin, id);
+
+    //Print menu options for modify employee
+    cout << endl;
+    cout << endl;
+    cout << "Choose the option you want to perform:" << endl;
+    cout << "1 - Modify employee name" << endl;
+    cout << "2 - Modify employee last name" << endl;
+    cout << "3 - Modify employee age" << endl;
+    cout << "4 - Modify employee position" << endl;
+    cout << "5 - Modify employee department" << endl;
+    cout << "6 - Modify employee email" << endl;
+    cout << "7 - Modify employee phone" << endl;
+    cout << "8 - Modify employee modality pay" << endl;
+    cout << "9 - Modify employee salary" << endl;
+    cout << "10 - Close menu" << endl;
+
+    // Choose the option
+    int option;
+    cin >> option;
+    cin.ignore();
+
+    switch (option)
+    {
+    case 1:
+        cout << "Modify employee name" << endl;
+        modifyEmployeeName(id); // <- Call the function to modify employee name
+        break;
+    case 2:
+        cout << "Modify employee last name" << endl;
+        modifyEmployeeLastName(id); // <- Call the function to modify employee last name
+        break;
+    case 3:
+        cout << "Modify employee age" << endl;
+        modifyEmployeeAge(id); // <- Call the function to modify employee age
+        break;
+    case 4:
+        cout << "Modify employee position" << endl;
+        modifyEmployeePosition(id); // <- Call the function to modify employee position
+        break;
+    case 5:
+        cout << "Modify employee department" << endl;
+        modifyEmployeeDepartment(id); // <- Call the function to modify employee department
+        break;
+    case 6:
+        cout << "Modify employee email" << endl;
+        modifyEmployeeEmail(id); // <- Call the function to modify employee email
+        break;
+    case 7:
+        cout << "Modify employee phone" << endl;
+        modifyEmployeePhone(id); // <- Call the function to modify employee phone
+        break;
+    case 8:
+        cout << "Modify employee modality pay" << endl;
+        modifyEmployeeModalityPay(id); // <- Call the function to modify employee modality pay
+        break;
+    case 9:
+        cout << "Modify employee salary" << endl;
+        modifyEmployeeSalary(id); // <- Call the function to modify employee salary
+        break;
+    case 10:
+        cout << "Close menu" << endl;
+        // Only close the menu
+        break;
+    default:
+        break;
+    }
+
+    cout << endl;
+    cout << endl;
+    printEmployeeList();  // <- Call the function to print the employee list with the new employee
+}
+
+//Modify Functions
+void modifyEmployeeName(string id){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        if(current->id == id){
+            cout << "Insert the new name: ";
+            string name;
+            getline(cin, name);
+            current->name = name;
+            cout << "Name modified successfully" << endl;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Employee not found" << endl;
+}
+
+void modifyEmployeeLastName(string id){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        if(current->id == id){
+            cout << "Insert the new last name: ";
+            string lastName;
+            getline(cin, lastName);
+            current->lastName = lastName;
+            cout << "Last name modified successfully" << endl;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Employee not found" << endl;
+}
+
+void modifyEmployeeAge(string id){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        if(current->id == id){
+            cout << "Insert the new age: ";
+            int age;
+            cin >> age;
+            cin.ignore();
+            current->age = age;
+            cout << "Age modified successfully" << endl;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Employee not found" << endl;
+}
+
+void modifyEmployeePosition(string id){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        if(current->id == id){
+            cout << "Insert the new position: ";
+            string position;
+            getline(cin, position);
+            current->position = position;
+            cout << "Position modified successfully" << endl;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Employee not found" << endl;
+}
+
+void modifyEmployeeDepartment(string id){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        if(current->id == id){
+            cout << "Insert the new department: ";
+            string department;
+            getline(cin, department);
+            current->department = department;
+            cout << "Department modified successfully" << endl;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Employee not found" << endl;
+}
+
+void modifyEmployeeEmail(string id){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        if(current->id == id){
+            cout << "Insert the new email: ";
+            string email;
+            getline(cin, email);
+            current->email = email;
+            cout << "Email modified successfully" << endl;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Employee not found" << endl;
+}
+
+void modifyEmployeePhone(string id){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        if(current->id == id){
+            cout << "Insert the new phone: ";
+            string phone;
+            getline(cin, phone);
+            current->phone = phone;
+            cout << "Phone modified successfully" << endl;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Employee not found" << endl;
+}
+
+void modifyEmployeeModalityPay(string id){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        if(current->id == id){
+            cout << "Insert the new modality pay: ";
+            string modalityPay;
+            getline(cin, modalityPay);
+            current->modalityPay = modalityPay;
+            cout << "Modality pay modified successfully" << endl;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Employee not found" << endl;
+}
+
+void modifyEmployeeSalary(string id){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        if(current->id == id){
+            cout << "Insert the new salary: ";
+            string salary;
+            getline(cin, salary);
+            current->salary = salary;
+            cout << "Salary modified successfully" << endl;
+            return;
+        }
+        current = current->next;
+    }
+    cout << "Employee not found" << endl;
+}
+
+
+//Print sorted employee list by alphabethic order - Yet not implemented sort algorithm
+void sortEmployeesByAlphOrder(){ 
+    Employee *current = headEmployee;
+    while(current != NULL){
+        cout << "Name: " << current->name << endl;
+        cout << "Last Name: " << current->lastName << endl;
+        cout << "ID: " << current->id << endl;
+        cout << "Age: " << current->age << endl;
+        cout << "Position: " << current->position << endl;
+        cout << "Department: " << current->department << endl;
+        cout << "Email: " << current->email << endl;
+        cout << "Phone: " << current->phone << endl;
+        cout << "Modality Pay: " << current->modalityPay << endl;
+        cout << "Salary: " << current->salary << endl;
+        cout << endl;
+        current = current->next;
+    }
+
+    //Jump to the employee menu
+    consultEmployee();
+}
+
+//Print sorted employee list by age  - Yet not implemented sort algorithm
+void printSortEmployeesByAge(){
+    Employee *current = headEmployee;
+    while(current != NULL){
+        cout << "Name: " << current->name << endl;
+        cout << "Last Name: " << current->lastName << endl;
+        cout << "ID: " << current->id << endl;
+        cout << "Age: " << current->age << endl;
+        cout << "Position: " << current->position << endl;
+        cout << "Department: " << current->department << endl;
+        cout << "Email: " << current->email << endl;
+        cout << "Phone: " << current->phone << endl;
+        cout << "Modality Pay: " << current->modalityPay << endl;
+        cout << "Salary: " << current->salary << endl;
+        cout << endl;
+        current = current->next;
+    }
+
+    //Jump to the employee menu
+    consultEmployee();
+}
+
+
+
+//Add Data
 void addData(){
     // Employee data
     Employee *employee1 = new Employee("Juan", "Perez", "123456789", 25, "Gerente", "Gerencia", "juan@corro.com", "12345678", "Mensual", "1000000");
     insertEmployee(employee1);
+
+      //Add Journeys to employee1
+    Journey *journey1 = new Journey("01/01/2021", "8", "Normal");
+    insertJourney(employee1->id, journey1);
+    Journey *journey2 = new Journey("02/01/2021", "3", "Holiday");
+    insertJourney(employee1->id, journey2);
+    Journey *journey3 = new Journey("03/01/2021", "5", "Weekend");
+    insertJourney(employee1->id, journey3);
+
     Employee *employee2 = new Employee("Maria", "Gonzalez", "987654321", 30, "Gerente", "Gerencia", "maria@correo", "87654321", "Mensual", "1000000");
     insertEmployee(employee2);
-    Employee *employee3 = new Employee("Pedro", "Garcia", "123456789", 25, "Gerente", "Gerencia", "pedro@correo", "12345678", "Mensual", "1000000");
+
+    //Add Journeys to employee2
+    Journey *journey4 = new Journey("01/01/2021", "8", "Normal");
+    insertJourney(employee2->id, journey4);
+    Journey *journey5 = new Journey("02/01/2021", "3", "Holiday");
+    insertJourney(employee2->id, journey5);
+
+
+    Employee *employee3 = new Employee("Pedro", "Garcia", "12345678", 25, "Gerente", "Gerencia", "pedro@correo", "12345678", "Mensual", "1000000");
     insertEmployee(employee3);
 
     // Inventory data
@@ -182,7 +581,7 @@ void consultEmployee()
 {
     //Print menu options for consult employee
     cout << endl;
- cout << endl;
+    cout << endl;
     cout << "Choose the option you want to perform:" << endl;
     cout << "1 - Add a new employee" << endl;
     cout << "2 - Modify an employee" << endl;
@@ -200,24 +599,26 @@ void consultEmployee()
     switch (option)
     {
     case 1:
-        cout << "Add a new employee" << endl;
-        // addNewEmployee(); // <- Call the function to add a new employee
+        recolectNewEmployeeData(); // <- Call the function to add a new employee
+        cout << endl;
+        cout << endl;
+        printEmployeeList();  // <- Call the function to print the employee list with the new employee
         break;
     case 2:
         cout << "Modify an employee" << endl;
-        // modifyEmployee(); // <- Call the function to modify an employee
+        modifyEmployee(); // <- Call the function to modify an employee
         break;
     case 3:
         cout << "Sort employees by alphabetic order" << endl;
-        // sortEmployeesByAlphOrder(); // <- Call the function to sort employees by criteria 1
+        sortEmployeesByAlphOrder(); // <- Call the function to sort employees by criteria 1
         break;
     case 4:
         cout << "Sort employees by age" << endl;
-        // sortEmployeesByAge(); // <- Call the function to sort employees by criteria 2
+        printSortEmployeesByAge(); // <- Call the function to sort employees by criteria 2
         break;
     case 5:
         cout << "Print employee list" << endl;
-        // printEmployeeList(); // <- Call the function to print the employee list
+        printEmployeeList(); // <- Call the function to print the employee list
         break;
     case 6:
         cout << "Calculate salary for an employee" << endl;
@@ -350,7 +751,8 @@ void consultProductionLine()
 // ------------------------------- Main function --------------------------------
 int main()
 {
-    //addData(); // <- Call the function to add data to the program
+    addData(); // <- Call the function to add data to the program
+    cout << endl;
     cout << "Welcome to SiliconLogic - Your Job Information Portal" << endl;   
     cout << "What area of the company would you like to see?:" << endl;
     cout << endl;
