@@ -96,11 +96,75 @@ struct Product {
 
 //---------------------------- Functions for program --------------------------
 
+void insertEmployee(Employee *employee)
+{
+    // Insert employee in the bottom of the list
+    if (headEmployee == NULL)
+    {
+        headEmployee = employee;
+        tailEmployee = employee;
+    }
+    else
+    {
+        tailEmployee->next = employee;
+        employee->previous = tailEmployee;
+        tailEmployee = employee;
+    }
+}
+
+void recolectNewEmployeeData()
+{
+    cout << endl;
+    cout << endl;
+    // Add a new employee to the list
+    cout << "Add a new employee" << endl;
+    cout << endl;
+    cout << "Insert the employee name: ";
+    string name;
+    getline(cin, name);
+    cout << "Insert the employee last name: ";
+    string lastName;
+    getline(cin, lastName);
+    cout << "Insert the employee ID: ";
+    string id;
+    getline(cin, id);
+    cout << "Insert the employee age: ";
+    int age;
+    cin >> age;
+    cin.ignore();
+    cout << "Insert the employee position: ";
+    string position;
+    getline(cin, position);
+    cout << "Insert the employee department: ";
+    string department;
+    getline(cin, department);
+    cout << "Insert the employee email: ";
+    string email;
+    getline(cin, email);
+    cout << "Insert the employee phone: ";
+    string phone;
+    getline(cin, phone);
+    cout << "Insert the employee modality pay: ";
+    string modalityPay;
+    getline(cin, modalityPay);
+    cout << "Insert the employee salary: ";
+    string salary;
+    getline(cin, salary);
+
+    // Create the new employee
+    Employee *newEmployee = new Employee(name, lastName, id, age, position, department, email, phone, modalityPay, salary);
+    insertEmployee(newEmployee);
+
+}
+
 void addData(){
     // Employee data
     Employee *employee1 = new Employee("Juan", "Perez", "123456789", 25, "Gerente", "Gerencia", "juan@corro.com", "12345678", "Mensual", "1000000");
+    insertEmployee(employee1);
     Employee *employee2 = new Employee("Maria", "Gonzalez", "987654321", 30, "Gerente", "Gerencia", "maria@correo", "87654321", "Mensual", "1000000");
+    insertEmployee(employee2);
     Employee *employee3 = new Employee("Pedro", "Garcia", "123456789", 25, "Gerente", "Gerencia", "pedro@correo", "12345678", "Mensual", "1000000");
+    insertEmployee(employee3);
 
     // Inventory data
     Material *material1 = new Material("Silicon");
