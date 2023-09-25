@@ -494,10 +494,52 @@ void modifyEmployeeSalary(string id){
 }
 
 
-//Print sorted employee list by alphabethic order - Yet not implemented sort algorithm
-void sortEmployeesByAlphOrder(){ 
+//Print sorted employee list by age - Minor to major
+void printSortEmployeesByAgeMinorTo() {
+    // Create a temporary copy of the employee list
+    Employee *tempList = nullptr;
     Employee *current = headEmployee;
-    while(current != NULL){
+    while (current != nullptr) {
+        Employee *newEmployee = new Employee(*current); // Create a copy of the employee
+        newEmployee->next = tempList;
+        tempList = newEmployee;
+        current = current->next;
+    }
+
+    // Perform a bubble sort on the temporary list by age (from youngest to oldest)
+    bool sorted = false;
+    while (!sorted) {
+        sorted = true;
+        current = tempList;
+        Employee *prev = nullptr;
+        Employee *nextNode = nullptr;
+
+        while (current->next != nullptr) {
+            nextNode = current->next;
+
+            if (current->age > nextNode->age) {
+                // Swap the pointers, not the content of nodes
+                current->next = nextNode->next;
+                nextNode->next = current;
+
+                if (prev == nullptr) {
+                    tempList = nextNode;
+                } else {
+                    prev->next = nextNode;
+                }
+
+                prev = nextNode;
+                sorted = false;
+            } else {
+                prev = current;
+                current = nextNode;
+            }
+        }
+    }
+
+    // Print the sorted temporary list (from youngest to oldest)
+    current = tempList;
+    while (current != nullptr) {
         cout << "Name: " << current->name << endl;
         cout << "Last Name: " << current->lastName << endl;
         cout << "ID: " << current->id << endl;
@@ -512,14 +554,62 @@ void sortEmployeesByAlphOrder(){
         current = current->next;
     }
 
-    //Jump to the employee menu
+    // Clean up the temporary list (delete allocated memory)
+    current = tempList;
+    while (current != nullptr) {
+        Employee *next = current->next;
+        delete current;
+        current = next;
+    }
+
+    // Jump to the employee menu
     consultEmployee();
 }
 
-//Print sorted employee list by age  - Yet not implemented sort algorithm
-void printSortEmployeesByAge(){
+//Print sorted employee list by age  - Major to minor
+void printSortEmployeesByAgeMajorTo() {
     Employee *current = headEmployee;
-    while(current != NULL){
+    Employee *prev = nullptr;
+    Employee *nextNode = nullptr;
+
+    // If the list is empty or has only one element, there's no need to sort it.
+    if (headEmployee == nullptr || headEmployee->next == nullptr) {
+        consultEmployee(); // Exit the function
+    }
+
+    // Perform a bubble sort on the linked list by age (from oldest to youngest)
+    bool sorted = false;
+    while (!sorted) {
+        sorted = true;
+        current = headEmployee;
+        prev = nullptr;
+
+        while (current->next != nullptr) {
+            nextNode = current->next;
+
+            if (current->age < nextNode->age) {
+                // Swap the pointers, not the content of nodes
+                current->next = nextNode->next;
+                nextNode->next = current;
+
+                if (prev == nullptr) {
+                    headEmployee = nextNode;
+                } else {
+                    prev->next = nextNode;
+                }
+
+                prev = nextNode;
+                sorted = false;
+            } else {
+                prev = current;
+                current = nextNode;
+            }
+        }
+    }
+
+    // Print the sorted list
+    current = headEmployee;
+    while (current != nullptr) {
         cout << "Name: " << current->name << endl;
         cout << "Last Name: " << current->lastName << endl;
         cout << "ID: " << current->id << endl;
@@ -534,7 +624,7 @@ void printSortEmployeesByAge(){
         current = current->next;
     }
 
-    //Jump to the employee menu
+    // Jump to the employee menu
     consultEmployee();
 }
 
@@ -706,12 +796,12 @@ void consultEmployee()
     cout << "Choose the option you want to perform:" << endl;
     cout << "1 - Add a new employee" << endl;
     cout << "2 - Modify an employee" << endl;
-    cout << "3 - Sort employees by alphabetic order" << endl;
-    cout << "4 - Sort employees by ag" << endl;
+    cout << "3 - Sort employees by age - Minor to Major" << endl;
+    cout << "4 - Sort employees by age - Mayor To Minor" << endl;
     cout << "5 - Print employee list" << endl;
     cout << "6 - Calculate salary for an employee" << endl;
     cout << "7 - Delete an employee" << endl;
-    cout << "8 - Close menu" << endl;
+    cout << "8 - Exit" << endl;
 
     // Choose the option
     int option;
@@ -730,10 +820,10 @@ void consultEmployee()
         modifyEmployee(); // <- Call the function to modify an employee
         break;
     case 3:
-        sortEmployeesByAlphOrder(); // <- Call the function to sort employees by criteria 1
+        printSortEmployeesByAgeMinorTo(); // <- Call the function to sort employees by criteria 1
         break;
     case 4:
-        printSortEmployeesByAge(); // <- Call the function to sort employees by criteria 2
+        printSortEmployeesByAgeMajorTo(); // <- Call the function to sort employees by criteria 2
         break;
     case 5:
         printEmployeeList(); // <- Call the function to print the employee list
@@ -745,8 +835,7 @@ void consultEmployee()
         // deleteEmployee(); // <- Call the function to delete an employee
         break;
     case 8:
-        cout << "Close menu" << endl;
-        // Only close the menu
+        // Close the menu
         break;
     default:
         break;
