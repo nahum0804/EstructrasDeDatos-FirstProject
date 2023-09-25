@@ -7,13 +7,13 @@ using namespace std;
 // Define a struct to represent a Journey (workday)
 struct Journey {
     string date;     // Date of the workday
-    string hours;    // Hours worked on the workday
-    string modality; // Modality of the workday (e.g., normal, extra, double, etc.)
+    int hours;    // Hours worked on the workday
+    string modality; // Modality of the workday (Per hour or complete day)
 
     Journey *next;   // Pointer to the next Journey in a list
 
     // Constructor to initialize a Journey object
-    Journey(string _date, string _hours, string _modality)
+    Journey(string _date, int _hours, string _modality)
     {
         // Initialize Journey properties
         date = _date;
@@ -37,7 +37,7 @@ struct Employee {
     string email;          // Employee's email address
     string phone;          // Employee's phone number
     string modalityPay;    // Employee's pay modality (e.g., hourly or full-time)
-    string salary;         // Employee's base salary
+    int salary;         // Employee's base salary
 
     Employee *next;        // Pointer to the next Employee in a list
     Employee *previous;    // Pointer to the previous Employee in a list
@@ -46,8 +46,8 @@ struct Employee {
     Journey journeys; // Pointer to a list of Journeys associated with the Employee
 
     // Constructor to initialize an Employee object
-    Employee(string _name, string _lastName, string _id, int _age, string _position, string _department, string _email, string _phone, string _modalityPay, string _salary)
-        : journeys("","","")
+    Employee(string _name, string _lastName, string _id, int _age, string _position, string _department, string _email, string _phone, string _modalityPay, int _salary)
+        : journeys("",0,"")
     {
         // Initialize Employee properties
         name = _name;
@@ -131,7 +131,7 @@ void modifyEmployeePhone(string id);
 void modifyEmployeeModalityPay(string id);
 void modifyEmployeeSalary(string id);
 void addJourney(string id, Journey *journey);
-
+void calculateSalary();
 
 
 
@@ -235,8 +235,9 @@ void recolectNewEmployeeData()
     string modalityPay;
     getline(cin, modalityPay);
     cout << "Insert the employee salary: ";
-    string salary;
-    getline(cin, salary);
+    int salary;
+    cin >> salary;
+    cin.ignore();
 
     // Create the new employee
     Employee *newEmployee = new Employee(name, lastName, id, age, position, department, email, phone, modalityPay, salary);
@@ -480,8 +481,9 @@ void modifyEmployeeSalary(string id){
     while(current != NULL){
         if(current->id == id){
             cout << "Insert the new salary: ";
-            string salary;
-            getline(cin, salary);
+            int salary;
+            cin >> salary;
+            cin.ignore();
             current->salary = salary;
             cout << "Salary modified successfully" << endl;
             return;
@@ -541,28 +543,28 @@ void printSortEmployeesByAge(){
 //Add Data
 void addData(){
     // Employee data
-    Employee *employee1 = new Employee("Juan", "Perez", "123456789", 25, "Gerente", "Gerencia", "juan@corro.com", "12345678", "Mensual", "1000000");
+    Employee *employee1 = new Employee("Juan", "Perez", "123456789", 25, "Gerente", "Gerencia", "juan@corro.com", "12345678", "Complete Journey", 10000);
     insertEmployee(employee1);
 
       //Add Journeys to employee1
-    Journey *journey1 = new Journey("01/01/2021", "8", "Normal");
+    Journey *journey1 = new Journey("01/01/2021", 8, "Normal");
     insertJourney(employee1->id, journey1);
-    Journey *journey2 = new Journey("02/01/2021", "3", "Holiday");
+    Journey *journey2 = new Journey("02/01/2021", 3, "Holiday");
     insertJourney(employee1->id, journey2);
-    Journey *journey3 = new Journey("03/01/2021", "5", "Weekend");
+    Journey *journey3 = new Journey("03/01/2021", 5, "Weekend");
     insertJourney(employee1->id, journey3);
 
-    Employee *employee2 = new Employee("Maria", "Gonzalez", "987654321", 30, "Gerente", "Gerencia", "maria@correo", "87654321", "Mensual", "1000000");
+    Employee *employee2 = new Employee("Maria", "Gonzalez", "987654321", 30, "Gerente", "Gerencia", "maria@correo", "87654321", "Per hour", 1500);
     insertEmployee(employee2);
 
     //Add Journeys to employee2
-    Journey *journey4 = new Journey("01/01/2021", "8", "Normal");
+    Journey *journey4 = new Journey("01/01/2021", 19, "Normal");
     insertJourney(employee2->id, journey4);
-    Journey *journey5 = new Journey("02/01/2021", "3", "Holiday");
+    Journey *journey5 = new Journey("02/01/2021", 3, "Holiday");
     insertJourney(employee2->id, journey5);
 
 
-    Employee *employee3 = new Employee("Pedro", "Garcia", "12345678", 25, "Gerente", "Gerencia", "pedro@correo", "12345678", "Mensual", "1000000");
+    Employee *employee3 = new Employee("Pedro", "Garcia", "12345678", 25, "Gerente", "Gerencia", "pedro@correo", "12345678", "Complete Journey", 15000);
     insertEmployee(employee3);
 
     // Inventory data
@@ -573,6 +575,125 @@ void addData(){
     Material *material5 = new Material("Aluminum");
     Material *material6 = new Material("Silicon");
     //Add more Microprocessors materials
+}
+
+//Calculate Salary
+void calculateSalary(){
+    //Calculate salary for an employee
+    //  - Search the employee
+    //  - Search and calculate the salary in the journeys
+    //  - Normal: 1000 per hour
+    //  - Extra: 1500 per hour
+    //  - Double: 2000 per hour
+    //  - Holiday: 2500 per hour
+    //  - Weekend: 3000 per hour
+
+
+
+    //Get ID of the employee to calculate salary
+    cout << "Insert the ID of the employee you want to calculate salary: ";
+    string id;
+    getline(cin, id);
+
+    //Search the employee
+    Employee *current = headEmployee;
+    if(current == NULL){
+        cout << "Employee not found" << endl;
+        return;
+    } else {
+        while(current != NULL){
+            if(current->id == id){
+                cout << current->modalityPay << endl;
+                //Search and calculate the salary in the journeys
+                Journey *currentJourney = &current->journeys;
+                int amountPay = 0;
+                if(current->modalityPay == "Complete Journey"){
+                    while(currentJourney->next != NULL){
+                        if(currentJourney->hours == 8){
+                            amountPay += current->salary;  //Normal hours
+                        } else if(currentJourney->hours > 8){
+                            amountPay += current->salary + ((currentJourney->hours - 8) * (current->salary * 1.5));  //Extra hours
+                        } else if(currentJourney->hours < 8){
+                            amountPay += current->salary - ((8 - currentJourney->hours) * (current->salary * 1.5));  //Less hours 
+                        }
+                        currentJourney = currentJourney->next;
+                    }
+                    cout << "Salary: " << amountPay << endl;
+                    //Back to the employee menu
+                    consultEmployee();
+                    return;
+                } else if(current->modalityPay == "Per hour"){
+                    while(currentJourney->next != NULL){
+                        if(currentJourney->modality == "Normal"){
+                            amountPay += currentJourney->hours * current->salary;
+                        } else if(currentJourney->modality == "Extra"){
+                            amountPay += currentJourney->hours * ((current->salary) * 1.5) ;
+                        } else if(currentJourney->modality == "Double"){
+                            amountPay += currentJourney->hours * ((current->salary) * 2);
+                        } else if(currentJourney->modality == "Holiday"){
+                            amountPay += currentJourney->hours * ((current->salary) * 1.75);
+                        } else if(currentJourney->modality == "Weekend"){
+                            amountPay += currentJourney->hours * ((current->salary) * 1.85);
+                        }
+                        currentJourney = currentJourney->next;
+                    }
+                    cout << "Salary: " << amountPay << endl;
+                    //Back to the employee menu
+                    consultEmployee();
+                }
+            }
+            current = current->next;
+        }
+    }
+    cout << "Employee not found" << endl;
+}
+
+//Delete Employee
+void deleteEmployee(){
+    //Get ID of the employee to delete
+    cout << "Insert the ID of the employee you want to delete: ";
+    string id;
+    getline(cin, id);
+
+    //Search the employee
+    Employee *current = headEmployee;
+    if(current == NULL){
+        cout << "Employee not found" << endl;
+        return;
+    } else {
+        while(current != NULL){
+            if(current->id == id){
+                //Delete the employee
+                if(current == headEmployee){
+                    headEmployee = current->next;
+                    headEmployee->previous = NULL;
+                    delete current;
+                    cout << "Employee deleted successfully" << endl;
+                    return;
+                    //Back to the employee menu
+                    consultEmployee();
+                } else if(current == tailEmployee){
+                    tailEmployee = current->previous;
+                    tailEmployee->next = NULL;
+                    delete current;
+                    cout << "Employee deleted successfully" << endl;
+                    //Back to the employee menu
+                    consultEmployee();
+                    return;
+                } else {
+                    current->previous->next = current->next;
+                    current->next->previous = current->previous;
+                    delete current;
+                    cout << "Employee deleted successfully" << endl;
+                    //Back to the employee menu
+                    consultEmployee();
+                    return;
+                }
+            }
+            current = current->next;
+        }
+    }
+    cout << "Employee not found" << endl;
 }
 
 
@@ -589,7 +710,8 @@ void consultEmployee()
     cout << "4 - Sort employees by ag" << endl;
     cout << "5 - Print employee list" << endl;
     cout << "6 - Calculate salary for an employee" << endl;
-    cout << "7 - Close menu" << endl;
+    cout << "7 - Delete an employee" << endl;
+    cout << "8 - Close menu" << endl;
 
     // Choose the option
     int option;
@@ -605,26 +727,24 @@ void consultEmployee()
         printEmployeeList();  // <- Call the function to print the employee list with the new employee
         break;
     case 2:
-        cout << "Modify an employee" << endl;
         modifyEmployee(); // <- Call the function to modify an employee
         break;
     case 3:
-        cout << "Sort employees by alphabetic order" << endl;
         sortEmployeesByAlphOrder(); // <- Call the function to sort employees by criteria 1
         break;
     case 4:
-        cout << "Sort employees by age" << endl;
         printSortEmployeesByAge(); // <- Call the function to sort employees by criteria 2
         break;
     case 5:
-        cout << "Print employee list" << endl;
         printEmployeeList(); // <- Call the function to print the employee list
         break;
     case 6:
-        cout << "Calculate salary for an employee" << endl;
-        // calculateSalary(); // <- Call the function to calculate salary for an employee
+        calculateSalary(); // <- Call the function to calculate salary for an employee
         break;
     case 7:
+        // deleteEmployee(); // <- Call the function to delete an employee
+        break;
+    case 8:
         cout << "Close menu" << endl;
         // Only close the menu
         break;
