@@ -699,6 +699,11 @@ void calculateSalary(){
                 int amountPay = 0;
                 if(current->modalityPay == "Complete Journey"){
                     while(currentJourney->next != NULL){
+                        //Show the Journey data
+                        cout << endl;
+                        cout << "Date: " << currentJourney->date << endl;
+                        cout << "Hours: " << currentJourney->hours << endl;
+                        cout << "Modality: " << currentJourney->modality << endl;
                         if(currentJourney->hours == 8){
                             amountPay += current->salary;  //Normal hours
                         } else if(currentJourney->hours > 8){
@@ -714,6 +719,13 @@ void calculateSalary(){
                     return;
                 } else if(current->modalityPay == "Per hour"){
                     while(currentJourney->next != NULL){
+                        //Show the Journey data
+                        if(currentJourney->date != "" && currentJourney->hours != 0 && currentJourney->modality != ""){
+                            cout << endl;
+                            cout << "Date: " << currentJourney->date << endl;
+                            cout << "Hours: " << currentJourney->hours << endl;
+                            cout << "Modality: " << currentJourney->modality << endl;
+                        }
                         if(currentJourney->modality == "Normal"){
                             amountPay += currentJourney->hours * current->salary;
                         } else if(currentJourney->modality == "Extra"){
@@ -727,6 +739,7 @@ void calculateSalary(){
                         }
                         currentJourney = currentJourney->next;
                     }
+                    cout << endl;
                     cout << "Salary: " << amountPay << endl;
                     //Back to the employee menu
                     consultEmployee();
@@ -846,6 +859,8 @@ void consultEmployee()
 
 
 // Inventory System Functions -------------------------------------------------
+
+
 void consultInventory()
 {
     // Print menu options for consult inventory
@@ -870,11 +885,11 @@ void consultInventory()
     {
     case 1:
         cout << "Consult the stock" << endl;
-        // consultStock(); // <- Call the function to consult the stock
+        //consultStock(); // <- Call the function to consult the stock
         break;
     case 2:
         cout << "Consult a product list sorted by quantity" << endl;
-        // consultProductListByQuantity(); // <- Call the function to consult a product list sorted by quantity
+        //consultProductListByQuantity(); // <- Call the function to consult a product list sorted by quantity
         break;
     case 3:
         cout << "Consult a product list sorted by alphabetical order" << endl;
