@@ -1,4 +1,10 @@
 #include <iostream>
+#include <uuid/uuid.h> //Librería para generar ID del material
+
+// Import libs for generate a random string
+#include <string>
+#include <random>
+#include <ctime>
 
 using namespace std;
 
@@ -74,16 +80,25 @@ struct Employee {
 
 // Inventory System Structs
 struct Material{
+    //Materials for the production line - Names
+    // 1 - Silicon
+    // 2 - Plastic
+    // 3 - Cleaning Chemicals
+    // 4 - Copper
+    // 5 - Gold
+
     string name;
+    string id;
     Material *next;
     Material *previous;
 
-    Material(string _name){
+    Material(string _name, string _id){
         name = _name;
+        id = _id;
         next = NULL;
         previous = NULL;
     }   
-};
+} *headMaterial, *tailMaterial;
 
 // Define a struct to represent a Product
 struct Product {
@@ -91,29 +106,38 @@ struct Product {
     string id;          // Product ID or identification number
     string description; // Product description
     string productionStage; // Product production stage
+    // Procuction Stages 
+    // 1 - Design and deploy the product
+    // 2 - wafer build - Less Silicon
+    // 3 - Material Layer Deposition - Less Copper
+    // 4 - Testing and Assembly - Less Plastic, less gold, less cleaning chemicals 
+
 
     Product *next;     // Pointer to the next Product in a list
-    Product *previous;
+    Product *previous; // Pointer to the previous Product in a list
 
     // Constructor to initialize a Product object   --  Config circular list
-    Product(string _name, string _id, string _description)
+    Product(string _name, string _id, string _description, string _productionStage)
     {
         // Initialize Product properties
         name = _name;
         id = _id;
         description = _description;
+        productionStage = _productionStage;
 
         // Initialize pointers to NULL
         next = NULL;
         previous = NULL;
     }
-};
+} *headProduct, *tailProduct; // <- Global pointers to the first and last Product in a list
 
 //Prototypes 
 void consultEmployee();
 void consultInventory();
 void consultProductionLine();
 void addData();
+
+void menuMain();
 
 //Prototypes for Employee System
 void insertEmployee(Employee *employee);
@@ -136,9 +160,17 @@ void calculateSalary();
 
 
 //Prototypes for Inventory System
+void addMaterial(Material *material);
+void consultStock();
+void consultProductListByQuantity();
+string generateRandomString();
+void deleteMaterial();
 
 
 //Prototypes for Production Line System
+void addProduct(Product *product);
+Product* findProductById(const string& idToFind);
+void addProductWithCheck();
 
 
 
@@ -335,7 +367,7 @@ void modifyEmployee(){
         break;
     case 10:
         cout << "Close menu" << endl;
-        // Only close the menu
+        menuMain(); // <- Call the function to return to the main menu
         break;
     default:
         break;
@@ -657,14 +689,64 @@ void addData(){
     Employee *employee3 = new Employee("Pedro", "Garcia", "12345678", 25, "Gerente", "Gerencia", "pedro@correo", "12345678", "Complete Journey", 15000);
     insertEmployee(employee3);
 
+
     // Inventory data
-    Material *material1 = new Material("Silicon");
-    Material *material2 = new Material("Plastic");
-    Material *material3 = new Material("Copper");
-    Material *material4 = new Material("Steel");
-    Material *material5 = new Material("Aluminum");
-    Material *material6 = new Material("Silicon");
-    //Add more Microprocessors materials
+    Material *material1 = new Material("Silicon", generateRandomString());
+    addMaterial(material1);
+    Material *material2 = new Material("Plastic", generateRandomString());
+    addMaterial(material2);
+    Material *material3 = new Material("Copper", generateRandomString());
+    addMaterial(material3);
+    Material *material4 = new Material("Cleaning Chemicals", generateRandomString());
+    addMaterial(material4);
+    Material *material5 = new Material("Cleaning Chemicals", generateRandomString());
+    addMaterial(material5);
+    Material *material6 = new Material("Silicon", generateRandomString());
+    addMaterial(material6);
+    Material *material7 = new Material("Plastic", generateRandomString());
+    addMaterial(material7);
+    Material *material8 = new Material("Copper", generateRandomString());
+    addMaterial(material8);
+    Material *material9 = new Material("Silicon", generateRandomString());
+    addMaterial(material9);
+    Material *material10 = new Material("Plastic", generateRandomString());
+    addMaterial(material10);
+    Material *material11 = new Material("Copper", generateRandomString());
+    addMaterial(material11);
+    Material *material12 = new Material("Silicon", generateRandomString());
+    addMaterial(material12);
+    Material *material13 = new Material("Plastic", generateRandomString());
+    addMaterial(material13);
+    Material *material14 = new Material("Copper", generateRandomString());
+    addMaterial(material14);
+    Material *material15 = new Material("Cleaning Chemicals", generateRandomString());
+    addMaterial(material15);
+    Material *material16 = new Material("Cleaning Chemicals", generateRandomString());
+    addMaterial(material16);
+    Material *material17 = new Material("Silicon", generateRandomString());
+    addMaterial(material17);
+    Material *material18 = new Material("Gold", generateRandomString());
+    addMaterial(material18);
+    Material *material19 = new Material("Gold", generateRandomString());
+    addMaterial(material19);
+    Material *material20 = new Material("Gold", generateRandomString());
+    addMaterial(material20);
+    Material *material21 = new Material("Gold", generateRandomString());
+    addMaterial(material21);
+
+    //Add more Electronic Components
+    Product *product1 = new Product("USB Port", "123456789", "USB port for laptop", "Design and deploy the product");
+    addProduct(product1);
+    Product *product2 = new Product("HDMI Port", "987654321", "HDMI port for SmartTV", "Wafer build");
+    addProduct(product2);
+    Product *procuct3 = new Product("SD Card Port", "12345678", "SD Card Port for Camera", "Material Layer Deposition");
+    addProduct(procuct3);
+    Product *product4 = new Product("Headphone Jack", "87654321", "Headphone Jack", "Testing and Assembly");
+    addProduct(product4);
+    Product *product5 = new Product("RAM Memory", "2023","RAM Memory DDR5","Design and deploy the product");
+    addProduct(product5);
+    Product *product6 = new Product("CPU", "2024","CPU Intel i9 knockoff","Wafer build");
+    addProduct(product6);
 }
 
 //Calculate Salary
@@ -709,7 +791,8 @@ void calculateSalary(){
                         } else if(currentJourney->hours > 8){
                             amountPay += current->salary + ((currentJourney->hours - 8) * (current->salary * 1.5));  //Extra hours
                         } else if(currentJourney->hours < 8){
-                            amountPay += current->salary - ((8 - currentJourney->hours) * (current->salary * 1.5));  //Less hours 
+                            //Pay like normal hours
+                            amountPay += current->salary;
                         }
                         currentJourney = currentJourney->next;
                     }
@@ -772,7 +855,6 @@ void deleteEmployee(){
                     headEmployee->previous = NULL;
                     delete current;
                     cout << "Employee deleted successfully" << endl;
-                    return;
                     //Back to the employee menu
                     consultEmployee();
                 } else if(current == tailEmployee){
@@ -845,10 +927,10 @@ void consultEmployee()
         calculateSalary(); // <- Call the function to calculate salary for an employee
         break;
     case 7:
-        // deleteEmployee(); // <- Call the function to delete an employee
+        deleteEmployee(); // <- Call the function to delete an employee
         break;
     case 8:
-        // Close the menu
+        menuMain(); // <- Call the function to return to the main menu
         break;
     default:
         break;
@@ -860,6 +942,215 @@ void consultEmployee()
 
 // Inventory System Functions -------------------------------------------------
 
+//Initialize random seed
+std::string generateRandomString() {
+    const std::string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    const int stringLength = 6; // Longitud de la cadena aleatoria
+    std::string randomString;
+
+    std::random_device rd; // Utiliza una fuente de aleatoriedad verdadera si está disponible
+    std::mt19937 gen(rd()); // Mersenne Twister como generador
+    std::uniform_int_distribution<int> dis(0, characters.length() - 1);
+
+    for (int i = 0; i < stringLength; ++i) {
+        randomString += characters[dis(gen)];
+    }
+
+    return randomString;
+}
+
+//Add Material
+void addMaterial(Material *material)
+{
+    //Double-linked circular list
+    Material *current = headMaterial;
+    if(current == NULL){
+        headMaterial = material;
+        tailMaterial = material;
+
+        tailMaterial->next = headMaterial;
+        headMaterial->previous = tailMaterial;
+    } else {
+        tailMaterial->next = material;
+        material->previous = tailMaterial;
+        tailMaterial = material;
+        tailMaterial->next = headMaterial;
+        headMaterial->previous = tailMaterial;
+    }
+    cout << "Material added successfully" << endl;
+}
+
+//Print double-linked circular list
+void consultStock() {
+    if (headMaterial == nullptr) {
+        cout << "La lista está vacía." << endl;
+        return;
+    }
+
+    Material *current = headMaterial;
+
+    do {
+        cout << "Name: " << current->name << endl;
+        cout << endl;
+        current = current->next;
+    } while (current != headMaterial);
+
+    consultInventory();
+}
+
+
+//Print stock list in base of quantity
+void consultProductListByQuantity() {
+    int silicon = 0;
+    int plastic = 0;
+    int copper = 0;
+    int cleaningChemicals = 0;
+    int gold = 0;
+
+    if (headMaterial == nullptr) {
+        cout << "The list is empty." << endl;
+        return;
+    }
+
+    Material *current = headMaterial;
+
+    string firstMaterialID = headMaterial->id;
+
+    do {
+        if (current->name == "Silicon") {
+            silicon++;
+        } else if (current->name == "Plastic") {
+            plastic++;
+        } else if (current->name == "Copper") {
+            copper++;
+        } else if (current->name == "Cleaning Chemicals") {
+            cleaningChemicals++;
+        } else if (current->name == "Gold") {
+            gold++;
+        }
+
+        // Move to the next node
+        current = current->next;
+
+    } while (current != headMaterial);
+
+    cout << "Quantity of Silicon: " << silicon << endl;
+    cout << "Quantity of Plastic: " << plastic << endl;
+    cout << "Quantity of Copper: " << copper << endl;
+    cout << "Quantity of Cleaning Chemicals: " << cleaningChemicals << endl;
+    cout << "Quantity of Gold: " << gold << endl;
+
+    //Back to the material menu
+    consultInventory();
+}
+
+void addNewMaterial(){
+    cout << endl;
+    //Print the options for choose
+    cout << "Material that you can choose: " << endl;
+    cout << "Silicon" << endl;
+    cout << "Plastic" << endl;
+    cout << "Copper" << endl;
+    cout << "Cleaning Chemicals" << endl;
+    cout << "Gold" << endl;
+    cout << "Choose a option" << endl;
+    cout << endl;
+
+    //Get a option
+    string material;
+    getline(cin, material);
+
+    Material *materialObj = new Material(material, generateRandomString());
+    addMaterial(materialObj);
+    consultInventory();
+}
+
+void deleteMaterial() {
+    // Get data
+    cout << "Type the name of the material you want to delete (Only deletes the first occurrence in the stock): " << endl;
+    string nameDelete;
+    getline(cin, nameDelete);
+
+    Material *current = headMaterial;
+
+    // Search for the first element with the desired name
+    while (current != nullptr) {
+        if (current->name == nameDelete) {
+            // Element found, delete it
+
+            // If the element to delete is the first element (headMaterial)
+            if (current == headMaterial) {
+                headMaterial = headMaterial->next; // Update the list head
+                if (headMaterial != nullptr) {
+                    headMaterial->previous = nullptr; // Update the previous pointer of the new first element
+                }
+            } else {
+                // The element to delete is not the first element
+                current->previous->next = current->next; // Update the next pointer of the previous element
+                if (current->next != nullptr) {
+                    current->next->previous = current->previous; // Update the previous pointer of the next element
+                }
+            }
+
+            // Free memory of the deleted element
+            delete current;
+
+            cout << "Material with the name '" << nameDelete << "' deleted." << endl;
+
+            // Return to the menu
+            consultInventory();
+            return; // Exit the function
+        }
+        current = current->next;
+    }
+
+    // If the material is not found, display a message
+    cout << "Material with the name '" << nameDelete << "' not found." << endl;
+
+    // Return to the menu
+    consultInventory();
+}
+
+void showByCategory() {
+    // Get data
+    cout << "Type the name of the material you want to find (Only finds elements with the specified name): " << endl;
+    string nameToFind;
+    getline(cin, nameToFind);
+    cout << endl;
+
+    if (headMaterial == nullptr) {
+        // If the list is empty, display a message
+        cout << "The list is empty." << endl;
+        consultInventory();
+        return;
+    }
+
+    Material *current = headMaterial;
+    bool found = false;
+
+    do {
+        if (current->name == nameToFind) {
+            // Element found, print its details
+            cout << "Name: " << current->name << endl;
+            cout << "ID: " << current->id << endl;
+            
+            cout << endl;
+
+            found = true;
+        }
+        current = current->next;
+    } while (current != headMaterial);
+
+    if (!found) {
+        // If no elements with the specified name were found, display a message
+        cout << "No materials with the name '" << nameToFind << "' found." << endl;
+        cout << "Note: Respect upper and lower case letters." << endl;
+    }
+
+    // Return to the menu
+    consultInventory();
+}
+
 
 void consultInventory()
 {
@@ -868,13 +1159,11 @@ void consultInventory()
     cout << endl;
     cout << "Choose the option you want to perform:" << endl;
     cout << "1 - Consult the stock" << endl;
-    cout << "2 - Consult a product list sorted by quantity" << endl;
-    cout << "3 - Consult a product list sorted by alphabetical order" << endl;
-    cout << "4 - Add a new product" << endl;
-    cout << "5 - Increase stock for an existing product" << endl;
-    cout << "6 - Decrease stock for an existing product" << endl;
-    cout << "7 - Show stock by category" << endl;
-    cout << "8 - Close menu" << endl;
+    cout << "2 - Consult a stock list sorted by quantity" << endl;
+    cout << "3 - Add a new material" << endl;
+    cout << "4 - Delete a material" << endl;
+    cout << "5 - Show stock by category" << endl;
+    cout << "6 - Close menu" << endl;
 
     // Choose the option
     int option;
@@ -884,38 +1173,22 @@ void consultInventory()
     switch (option)
     {
     case 1:
-        cout << "Consult the stock" << endl;
-        //consultStock(); // <- Call the function to consult the stock
+        consultStock(); // <- Call the function to consult the stock
         break;
     case 2:
-        cout << "Consult a product list sorted by quantity" << endl;
-        //consultProductListByQuantity(); // <- Call the function to consult a product list sorted by quantity
+        consultProductListByQuantity(); // <- Call the function to consult a product list sorted by quantity
         break;
     case 3:
-        cout << "Consult a product list sorted by alphabetical order" << endl;
-        // consultProductListByAlphabeticalOrder(); // <- Call the function to consult a product list sorted by alphabetical order
+        addNewMaterial(); // <- Call the function to add a new material
         break;
-    case 4:
-        cout << "Add a new product" << endl;
-        // addNewProduct(); // <- Call the function to add a new product
+    case 4: 
+        deleteMaterial();
         break;
-    case 5:
-        cout << "Increase stock for an existing product" << endl;
-        // increaseStock(); // <- Call the function to increase stock for an existing product
+    case 5: 
+        showByCategory();
         break;
     case 6:
-        cout << "Decrease stock for an existing product" << endl;
-        // decreaseStock(); // <- Call the function to decrease stock for an existing product
-        break;
-    case 7:
-        cout << "Show stock by category" << endl;
-        // showStockByCategory(); // <- Call the function to show stock by category
-        break;
-    case 8:
-        cout << "Close menu" << endl;
-        // Only close the menu
-        break;
-    default:
+        menuMain();
         break;
     }
 }
@@ -924,6 +1197,232 @@ void consultInventory()
 
 
 //Procution Line System Functions ---------------------------------------------
+void addProductWithCheck() {
+    // Get data for the new product
+    cout << "Enter the product name: ";
+    string name;
+    getline(cin, name);
+
+    cout << "Enter the product ID: ";
+    string id;
+    getline(cin, id);
+
+    cout << "Enter the product description: ";
+    string description;
+    getline(cin, description);
+
+    cout << "Enter the production stage: " << endl;
+    //Show the options for choose
+    cout << "1 - Design and deploy the product" << endl;
+    cout << "2 - Wafer build" << endl;
+    cout << "3 - Material Layer Deposition" << endl;
+    cout << "4 - Testing and Assembly" << endl;
+    cout << " Choose a option:" << endl;
+    int option;
+    cin >> option;
+    cin.ignore();
+    cout << endl;
+    
+    string category;
+
+    switch (option)
+    {
+    case 1:
+        category = "Design and deploy the product";
+        break;
+    case 2:
+        category = "Wafer build";
+        break;
+    case 3:
+        category = "Material Layer Deposition";
+        break;
+    case 4:
+        category = "Testing and Assembly";
+        break;
+    default:
+        cout << "Invalid option" << endl;
+        break;
+    }
+
+    // Check if a product with the same ID already exists
+    if (findProductById(id) != nullptr) {
+        cout << "Error: A product with the same ID already exists." << endl;
+        return;
+    }
+
+    // Create a new Product object and add it to the list
+    Product *product = new Product(name, id, description, category);
+    addProduct(product);
+    //Back to the production line menu  
+    consultProductionLine();
+}
+
+Product* findProductById(const string& idToFind) {
+    Product *current = headProduct;
+
+    // Search for a product with the specified ID
+    while (current != nullptr) {
+        if (current->id == idToFind) {
+            return current; // Return the found product
+        }
+
+        // Move to the next element in the list (circular or not)
+        current = current->next;
+
+        // Check if we have completed one full iteration of the list
+        if (current == headProduct) {
+            break; // Exit the loop if we have completed one cycle
+        }
+    }
+
+    return nullptr; // ID not found
+}
+
+
+void addProduct(Product *product)  //Circular list
+{
+    //Add a new product to the list - It does not matter if there is one like it
+    Product *current = headProduct;
+    if(current == NULL){
+        headProduct = product;
+        tailProduct = product;
+        tailProduct->next = headProduct;
+        headProduct->previous = tailProduct;
+    } else {
+        tailProduct->next = product;
+        product->previous = tailProduct;
+        tailProduct = product;
+        tailProduct->next = headProduct;
+        headProduct->previous = tailProduct;
+    }
+    cout << "Product added successfully" << endl;
+}
+
+//Print double-linked circular list 
+void consultProductionLineData() {
+    // Check if the list is empty
+    if (headProduct == nullptr) {
+        cout << "The list is empty." << endl;
+        cout << endl;
+        consultProductionLine();
+        return;
+    }
+
+    // Create a pointer to traverse the circular list
+    Product* current = headProduct;
+
+    do {
+        cout << "Name: " << current->name << endl;
+        cout << "ID: " << current->id << endl;
+        cout << "Description: " << current->description << endl;
+        cout << "Production Stage: " << current->productionStage << endl;
+        cout << endl;
+
+        // Move to the next element in the circular list
+        current = current->next;
+    } while (current != headProduct); // Continue until we reach the head again
+    //Back to the production line menu
+    consultProductionLine();
+}
+
+//Print the specific product by ID
+void consultSpecificProduct(){
+    //Get ID of the product to consult
+    cout << "Insert the ID of the product you want to consult: ";
+    string id;
+    getline(cin, id);
+
+    //Search the product
+    Product *current = headProduct;
+    if(current == NULL){
+        cout << "Product not found" << endl;
+        return;
+    } else {
+        while(current != NULL){
+            if(current->id == id){
+                //Show the product data
+                cout << "Name: " << current->name << endl;
+                cout << "ID: " << current->id << endl;
+                cout << "Description: " << current->description << endl;
+                cout << "Production Stage: " << current->productionStage << endl;
+                cout << endl;
+                //Back to the production line menu
+                consultProductionLine();
+                return;
+            }
+            current = current->next;
+        }
+    }
+
+    //Bakc to the production line menu
+    consultProductionLine();
+}
+
+void modifyProductState(){
+    //Get ID of the product to modify
+    cout << "Insert the ID of the product you want to modify: ";
+    string id;
+    getline(cin, id);
+
+    //Search the product and change
+    Product *current = headProduct;
+
+    if(current == NULL){
+        cout << "Product not found" << endl;
+        return;
+    } else {
+        while(current != NULL){
+            if(current->id == id){
+                //Show the product data
+                cout << "Name: " << current->name << endl;
+                cout << "ID: " << current->id << endl;
+                cout << "Description: " << current->description << endl;
+                cout << "Production Stage: " << current->productionStage << endl;
+                cout << endl;
+
+                //Show the options for choose
+                cout << "1 - Design and deploy the product" << endl;
+                cout << "2 - Wafer build" << endl;
+                cout << "3 - Material Layer Deposition" << endl;
+                cout << "4 - Testing and Assembly" << endl;
+                cout << "Choose a option" << endl;
+                cout << endl;
+
+                //Get a option
+                int option;
+                cin >> option;
+                cin.ignore();
+
+                switch (option)
+                {
+                case 1:
+                    current->productionStage = "Design and deploy the product";
+                    break;
+                case 2:
+                    current->productionStage = "Wafer build";
+                    break;
+                case 3:
+                    current->productionStage = "Material Layer Deposition";
+                    break;
+                case 4:
+                    current->productionStage = "Testing and Assembly";
+                    break;
+                default:
+                    cout << "Invalid option" << endl;
+                    break;
+                }
+                //Back to the production line menu
+                consultProductionLine();
+                return;
+            }
+            current = current->next;
+        }
+    }
+    //Back to the production line menu
+    consultProductionLine();
+}
+
+
 void consultProductionLine()
 {
     // Print menu options for consult production line
@@ -931,8 +1430,10 @@ void consultProductionLine()
     cout << "Choose the option you want to perform:" << endl;
     cout << "1 - Consult a production line data" << endl;
     cout << "2 - Consult a specific product" << endl;
-    cout << "3 - Modify the state of a product" << endl;
-    cout << "4 - Close menu" << endl;
+    cout << "3 - Modify a specific stage of the production line" << endl;
+    cout << "4 - Add New Product in the Production Line" << endl;
+    cout << "5 - Delete Product in Product Line" << endl;
+    cout << "6 - Close menu" << endl;
 
     // Choose the option
     int option;
@@ -942,20 +1443,19 @@ void consultProductionLine()
     switch (option)
     {
     case 1:
-        cout << "Consult a production line data" << endl;
-        // consultProductionLineData(); // <- Call the function to consult a production line data
+        consultProductionLineData(); // <- Call the function to consult a production line data
         break;
     case 2:
-        cout << "Consult a specific product" << endl;
-        // consultSpecificProduct(); // <- Call the function to consult a specific product
+        consultSpecificProduct(); // <- Call the function to consult a specific product
         break;
     case 3:
-        cout << "Modify the state of a product" << endl;
-        // modifyProductState(); // <- Call the function to modify the state of a product
+        modifyProductState(); // <- Call the function to modify the state of a product
         break;
-    case 4:
-        cout << "Close menu" << endl;
-        // Only close the menu
+    case 5: 
+        addProductWithCheck(); // <- Call the function to add a new product
+        break;
+    case 6:
+        //
         break;
     default:
         break;
@@ -976,7 +1476,14 @@ void consultProductionLine()
 int main()
 {
     addData(); // <- Call the function to add data to the program
-    cout << endl;
+
+    menuMain(); // <- Call the main menu
+
+    return 0;
+}
+
+void menuMain(){
+        cout << endl;
     cout << "Welcome to SiliconLogic - Your Job Information Portal" << endl;   
     cout << "What area of the company would you like to see?:" << endl;
     cout << endl;
@@ -999,11 +1506,11 @@ int main()
             break;
         case 2:
             cout << "Inventory" << endl;
-            // consultInventory();  // <- Call the function to consult the inventory
+            consultInventory();  // <- Call the function to consult the inventory
             break;
         case 3:
             cout << "Production Line" << endl;
-            // consultProductionLine(); // <- Call the function to consult the production line
+            consultProductionLine(); // <- Call the function to consult the production line
             break;
         case 4:
             cout << "Close menu" << endl;
@@ -1013,6 +1520,4 @@ int main()
             cout << "Invalid option" << endl;
             break;
     }
-
-    return 0;
 }
