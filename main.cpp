@@ -179,6 +179,8 @@ void deletePr();
 
 //---------------------------- Functions for program --------------------------
 
+
+//This function add Journey to an employee
 void insertJourney(string id, Journey *journey)
 {
     //Search the employee
@@ -203,6 +205,7 @@ void insertJourney(string id, Journey *journey)
 }
 
 
+//This function add Employee to the employees list
 void insertEmployee(Employee *employee)
 {
     // Check if an employee with the same ID already exists
@@ -233,7 +236,7 @@ void insertEmployee(Employee *employee)
     cout << "Employee added successfully." << endl;
 }
 
-
+//Collect employee data and then add it to the list
 void recolectNewEmployeeData()
 {
     cout << endl;
@@ -383,6 +386,8 @@ void modifyEmployee(){
 
 //Modify Functions
 void modifyEmployeeName(string id){
+    //Using unique ID for search the employee 
+
     Employee *current = headEmployee;
     while(current != NULL){
         if(current->id == id){
@@ -399,6 +404,8 @@ void modifyEmployeeName(string id){
 }
 
 void modifyEmployeeLastName(string id){
+    //Using unique ID for search the employee 
+
     Employee *current = headEmployee;
     while(current != NULL){
         if(current->id == id){
@@ -415,6 +422,8 @@ void modifyEmployeeLastName(string id){
 }
 
 void modifyEmployeeAge(string id){
+    //Using unique ID for search the employee
+
     Employee *current = headEmployee;
     while(current != NULL){
         if(current->id == id){
@@ -432,6 +441,8 @@ void modifyEmployeeAge(string id){
 }
 
 void modifyEmployeePosition(string id){
+    //Using unique ID for search the employee
+
     Employee *current = headEmployee;
     while(current != NULL){
         if(current->id == id){
@@ -448,6 +459,8 @@ void modifyEmployeePosition(string id){
 }
 
 void modifyEmployeeDepartment(string id){
+    //Using unique ID for search the employee
+
     Employee *current = headEmployee;
     while(current != NULL){
         if(current->id == id){
@@ -464,6 +477,8 @@ void modifyEmployeeDepartment(string id){
 }
 
 void modifyEmployeeEmail(string id){
+    //Using unique ID for search the employee
+
     Employee *current = headEmployee;
     while(current != NULL){
         if(current->id == id){
@@ -480,6 +495,8 @@ void modifyEmployeeEmail(string id){
 }
 
 void modifyEmployeePhone(string id){
+    //Using unique ID for search the employee
+
     Employee *current = headEmployee;
     while(current != NULL){
         if(current->id == id){
@@ -496,6 +513,8 @@ void modifyEmployeePhone(string id){
 }
 
 void modifyEmployeeModalityPay(string id){
+    //Using unique ID for search the employee
+
     Employee *current = headEmployee;
     while(current != NULL){
         if(current->id == id){
@@ -512,6 +531,8 @@ void modifyEmployeeModalityPay(string id){
 }
 
 void modifyEmployeeSalary(string id){
+    //Using unique ID for search the employee 
+
     Employee *current = headEmployee;
     while(current != NULL){
         if(current->id == id){
@@ -667,6 +688,8 @@ void printSortEmployeesByAgeMajorTo() {
 
 //Add Data
 void addData(){
+    //Function for add data to the program by default
+
     // Employee data
     Employee *employee1 = new Employee("Juan", "Perez", "123456789", 25, "Gerente", "Gerencia", "juan@corro.com", "12345678", "Complete Journey", 10000);
     insertEmployee(employee1);
@@ -901,6 +924,8 @@ void deleteEmployee(){
 // Employee System Functions --------------------------------------------------
 void consultEmployee()
 {
+    //Principal menu for consult employee
+
     //Print menu options for consult employee
     cout << endl;
     cout << endl;
@@ -958,8 +983,9 @@ void consultEmployee()
 
 // Inventory System Functions -------------------------------------------------
 
-//Initialize random seed
 std::string generateRandomString() {
+    //Function for generate a random string for the ID of the material
+
     const std::string characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     const int stringLength = 6; // Longitud de la cadena aleatoria
     std::string randomString;
@@ -978,6 +1004,8 @@ std::string generateRandomString() {
 //Add Material
 void addMaterial(Material *material)
 {
+    //Add material in the Inventory Stock
+
     //Double-linked circular list
     Material *current = headMaterial;
     if(current == NULL){
@@ -998,6 +1026,8 @@ void addMaterial(Material *material)
 
 //Print double-linked circular list
 void consultStock() {
+
+    //Print the stock list
     if (headMaterial == nullptr) {
         cout << "La lista está vacía." << endl;
         return;
@@ -1008,6 +1038,7 @@ void consultStock() {
     string firstMaterialID = headMaterial->id;
     int contador = 0;
 
+    //Scroll through the list using the counter variable to mark the initial item in the list and stop at the second time it is encountered.
     do {
         cout << "Name: " << current->name << endl;
         cout << endl;
@@ -1023,6 +1054,7 @@ void consultStock() {
 
 //Print stock list in base of quantity
 void consultProductListByQuantity() {
+    //Quantity of each material
     int silicon = 0;
     int plastic = 0;
     int copper = 0;
@@ -1038,6 +1070,7 @@ void consultProductListByQuantity() {
 
     string firstMaterialID = headMaterial->id;
 
+    //Scroll through the list using the unique ID.
     do {
         if (current->name == "Silicon") {
             silicon++;
@@ -1166,7 +1199,7 @@ void deleteMt(const string& nameToDelete) {
 
             // Free memory of the deleted element
             delete current;
-
+gi
             cout << "Material with the name '" << nameToDelete << "' deleted." << endl;
 
             return; // Exit the function
@@ -1316,6 +1349,7 @@ void addProductWithCheck() {
         return;
     }
 
+    cout << "Check materials in list..." << endl;
     // Check if the required materials are present for the selected category
     if (!checkMaterialsForCategory(category)) {
         cout << "Error: The required materials for the selected category are not available." << endl;
@@ -1342,35 +1376,42 @@ void addProductWithCheck() {
 
 bool checkMaterialsForCategory(const string& category) {
     // Initialize counters for required materials
-    int siliconCount = 0;
-    int copperCount = 0;
-    int plasticCount = 0;
-    int goldCount = 0;
-    int cleaningChemicalsCount = 0;
+    int silicon = 0;
+    int copper = 0;
+    int plastic = 0;
+    int gold = 0;
+    int cleaningChemicals = 0;
 
-    // Traverse the material list to count available materials of each type
     Material *current = headMaterial;
-    while (current != nullptr) {
+
+    string firstMaterialID = headMaterial->id;
+
+    do {
         if (current->name == "Silicon") {
-            siliconCount++;
-        } else if (current->name == "Copper") {
-            copperCount++;
+            silicon++;
         } else if (current->name == "Plastic") {
-            plasticCount++;
-        } else if (current->name == "Gold") {
-            goldCount++;
+            plastic++;
+        } else if (current->name == "Copper") {
+            copper++;
         } else if (current->name == "Cleaning Chemicals") {
-            cleaningChemicalsCount++;
+            cleaningChemicals++;
+        } else if (current->name == "Gold") {
+            gold++;
         }
+
+        // Move to the next node
         current = current->next;
-    }
+
+    } while (current != headMaterial);
 
     // Check if there are enough materials for the specified category
-    if (category == "Wafer build" && siliconCount >= 1) {
+    if ((category == "Wafer build") && (silicon >= 1)) {
         return true;
-    } else if (category == "Material Layer Deposition" && copperCount >= 1) {
+    } else if ((category == "Material Layer Deposition") && (copper >= 1)) {
         return true;
-    } else if (category == "Testing and Assembly" && plasticCount >= 1 && goldCount >= 1 && cleaningChemicalsCount >= 1) {
+    } else if ((category == "Testing and Assembly") && (plastic >= 1) && (gold >= 1) && (cleaningChemicals >= 1)) {
+        return true;
+    } else if(category == "Design and deploy the product") {
         return true;
     } else {
         return false;
@@ -1750,7 +1791,7 @@ void menuMain(){
             consultProductionLine(); // <- Call the function to consult the production line
             break;
         case 4:
-            cout << "Close menu" << endl;
+            cout << "Thank you for preferring us! :)" << endl;
             // Only close the menu
             break;
         default:
