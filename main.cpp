@@ -165,7 +165,7 @@ void consultStock();
 void consultProductListByQuantity();
 string generateRandomString();
 void deleteMaterial();
-void deleteMaterialByName(const string& nameToDelete);
+void deleteMt(const string& nameToDelete);
 
 
 //Prototypes for Production Line System
@@ -173,6 +173,8 @@ void addProduct(Product *product);
 Product* findProductById(const string& idToFind);
 void addProductWithCheck();
 bool checkMaterialsForCategory(const string& category);
+void deleteProduct(const string& idToDelete);
+void deletePr();
 
 
 //---------------------------- Functions for program --------------------------
@@ -1102,7 +1104,11 @@ void deleteMaterial(){
             if (current == headMaterial) {
                 headMaterial = headMaterial->next; // Update the list head
                 if (headMaterial != nullptr) {
-                    headMaterial->previous = nullptr; // Update the previous pointer of the new first element
+                    headMaterial->previous = tailMaterial; // Update the previous pointer of the new first element
+                    tailMaterial->next = headMaterial; // Update the next pointer of the tail element
+                } else {
+                    // The list is now empty
+                    tailMaterial = nullptr;
                 }
             } else {
                 // The element to delete is not the first element
@@ -1123,7 +1129,58 @@ void deleteMaterial(){
         }
         current = current->next;
     }
+
+    // If the material is not found, display a message
+    cout << "Material with the name '" << nameDelete << "' not found." << endl;
+
+    // Return to the menu
+    consultInventory();
 }
+
+//Delete materials from the production line
+void deleteMt(const string& nameToDelete) {
+    Material *current = headMaterial;
+
+    // Search for the first element with the desired name
+    while (current != nullptr) {
+        if (current->name == nameToDelete) {
+            // Element found, delete it
+
+            // If the element to delete is the first element (headMaterial)
+            if (current == headMaterial) {
+                headMaterial = headMaterial->next; // Update the list head
+                if (headMaterial != nullptr) {
+                    headMaterial->previous = tailMaterial; // Update the previous pointer of the new first element
+                    tailMaterial->next = headMaterial; // Update the next pointer of the tail element
+                } else {
+                    // The list is now empty
+                    tailMaterial = nullptr;
+                }
+            } else {
+                // The element to delete is not the first element
+                current->previous->next = current->next; // Update the next pointer of the previous element
+                if (current->next != nullptr) {
+                    current->next->previous = current->previous; // Update the previous pointer of the next element
+                }
+            }
+
+            // Free memory of the deleted element
+            delete current;
+
+            cout << "Material with the name '" << nameToDelete << "' deleted." << endl;
+
+            return; // Exit the function
+        }
+        current = current->next;
+    }
+
+    // If the material is not found, display a message
+    cout << "Material with the name '" << nameToDelete << "' not found." << endl;
+
+    // Return to the menu
+    consultInventory();
+}
+
 
 void showByCategory() {
     // Get data
@@ -1344,22 +1401,36 @@ Product* findProductById(const string& idToFind) {
 
 
 void addProduct(Product *product) {
-    // Add a new product to the list - It does not matter if there is one like it
-    Product *currentProduct = headProduct;
-    if (currentProduct == nullptr) {
+     // If the list is empty, initialize headProduct and tailProduct
+    if (headProduct == nullptr) {
         headProduct = product;
         tailProduct = product;
         tailProduct->next = headProduct;
         headProduct->previous = tailProduct;
     } else {
+        // Add the new product to the end of the list
         tailProduct->next = product;
         product->previous = tailProduct;
         tailProduct = product;
-        tailProduct->next = headProduct;
-        headProduct->previous = tailProduct;
+        tailProduct->next = headProduct; // Connect the last one to the first to form the circle
+        headProduct->previous = tailProduct; // Update the previous pointer of the first
     }
-
     cout << "Product added successfully" << endl;
+
+    cout << "Product getting materials from the inventory..." << endl;
+    // Delete the materials used for the product
+    if(product->productionStage == "Wafer build") {
+        deleteMt("Silicon");
+    } else if (product->productionStage == "Material layer deposition") {
+        deleteMt("Silicon");
+        deleteMt("Copper");
+    } else if (product->productionStage == "Testing and Assembly") {
+        deleteMt("Silicon");
+        deleteMt("Copper");
+        deleteMt("Plastic");
+        deleteMt("Gold");
+        deleteMt("Cleaning Chemicals");
+    }
 }
 
 //Print double-linked circular list 
@@ -1517,6 +1588,18 @@ void modifyProductState(){
     consultProductionLine();
 }
 
+void deletePr(){
+    //  Get ID
+    cout << "Insert the ID of the product you want to delete: ";
+    string id;
+    getline(cin, id);
+
+    deleteProduct(id);
+
+    //Back to the production line menu
+    consultProductionLine();
+}
+
 void deleteProduct(const string& idToDelete) {
     // Check if the list is empty
     if (headProduct == nullptr) {
@@ -1534,9 +1617,13 @@ void deleteProduct(const string& idToDelete) {
             // If the product to delete is the first product (headProduct)
             if (current == headProduct) {
                 headProduct = headProduct->next; // Update the list head
+
                 if (headProduct != nullptr) {
-                    headProduct->previous = tailProduct; // Update the previous pointer of the new first product
-                    tailProduct->next = headProduct; // Update the next pointer of the tail product
+                    // Update the previous pointer of the new head product
+                    headProduct->previous = tailProduct;
+
+                    // Update the next pointer of the tail product
+                    tailProduct->next = headProduct;
                 } else {
                     // The list is now empty
                     tailProduct = nullptr;
@@ -1575,7 +1662,7 @@ void consultProductionLine()
     cout << "2 - Consult a specific product" << endl;
     cout << "3 - Consult a specific stage of the production line" << endl;
     cout << "4 - Modify a specific stage of the production line" << endl;
-    cout << "5 - Add New Product in the Production Line" << endl;
+    cout << "5 - Add New Product in the Production Line - ERROR in this sentence INFINITE LOOP" << endl;
     cout << "6 - Delete Product in Product Line" << endl;
     cout << "7 - Close menu" << endl;
 
@@ -1602,7 +1689,7 @@ void consultProductionLine()
         addProductWithCheck(); // <- Call the function to add a new product
         break;
     case 6:
-        //deleteProduct(); // <- Call the function to delete a product
+        deletePr(); // <- Call the function to delete a product
         break;
     case 7:
         menuMain(); // <- Call the function to return to the main menu
