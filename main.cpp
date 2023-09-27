@@ -1,5 +1,4 @@
 #include <iostream>
-#include <uuid/uuid.h> //Librería para generar ID del material
 
 // Import libs for generate a random string
 #include <string>
@@ -790,13 +789,6 @@ void addData(){
 //Calculate Salary
 void calculateSalary(){
     //Calculate salary for an employee
-    //  - Search the employee
-    //  - Search and calculate the salary in the journeys
-    //  - Normal: 1000 per hour
-    //  - Extra: 1500 per hour
-    //  - Double: 2000 per hour
-    //  - Holiday: 2500 per hour
-    //  - Weekend: 3000 per hour
 
 
 
@@ -817,7 +809,7 @@ void calculateSalary(){
                 //Search and calculate the salary in the journeys
                 Journey *currentJourney = &current->journeys;
                 int amountPay = 0;
-                if(current->modalityPay == "Complete Journey"){
+                if(current->modalityPay == "Complete Journey"){  //In case the employee is paid by complete journey
                     while(currentJourney->next != NULL){
                         //Show the Journey data
                         cout << endl;
@@ -839,7 +831,7 @@ void calculateSalary(){
                     //Back to the employee menu
                     consultEmployee();
                     return;
-                } else if(current->modalityPay == "Per hour"){
+                } else if(current->modalityPay == "Per hour"){  //In case the employee is paid per hour
                     while(currentJourney->next != NULL){
                         //Show the Journey data
                         if(currentJourney->date != "" && currentJourney->hours != 0 && currentJourney->modality != ""){
@@ -932,8 +924,8 @@ void consultEmployee()
     cout << "Choose the option you want to perform:" << endl;
     cout << "1 - Add a new employee" << endl;
     cout << "2 - Modify an employee" << endl;
-    cout << "3 - Sort employees by age - Minor to Major" << endl;
-    cout << "4 - Sort employees by age - Mayor To Minor" << endl;
+    cout << "3 - Print employees sorted by age - Minor to Major" << endl;
+    cout << "4 - Print employees by sorted age - Mayor To Minor" << endl;
     cout << "5 - Print employee list" << endl;
     cout << "6 - Calculate salary for an employee" << endl;
     cout << "7 - Delete an employee" << endl;
@@ -1199,7 +1191,7 @@ void deleteMt(const string& nameToDelete) {
 
             // Free memory of the deleted element
             delete current;
-gi
+
             cout << "Material with the name '" << nameToDelete << "' deleted." << endl;
 
             return; // Exit the function
@@ -1215,6 +1207,7 @@ gi
 }
 
 
+/// Show the materials in the inventory by category
 void showByCategory() {
     // Get data
     cout << "Type the name of the material you want to find (Only finds elements with the specified name): " << endl;
@@ -1316,7 +1309,7 @@ void addProductWithCheck() {
     getline(cin, description);
 
     cout << "Enter the production stage: " << endl;
-    //Show the options for choose
+    //Show the options for choose the production stage
     cout << "1 - Design and deploy the product" << endl;
     cout << "2 - Wafer build" << endl;
     cout << "3 - Material Layer Deposition" << endl;
@@ -1329,6 +1322,7 @@ void addProductWithCheck() {
 
     string category;
 
+    //Select the category to add the product
     switch (option)
     {
     case 1:
@@ -1459,6 +1453,7 @@ void addProduct(Product *product) {
     cout << "Product added successfully" << endl;
 
     cout << "Product getting materials from the inventory..." << endl;
+
     // Delete the materials used for the product
     if(product->productionStage == "Wafer build") {
         deleteMt("Silicon");
@@ -1534,6 +1529,7 @@ void consultSpecificProduct(){
     consultProductionLine();
 }
 
+
 //Consult Production Stage
 void consultStageProduction() {
     // Get the production stage to consult
@@ -1574,10 +1570,11 @@ void modifyProductState(){
     //Search the product and change
     Product *current = headProduct;
 
+    //Compair current with null for verify if the list is empty
     if(current == NULL){
         cout << "Product not found" << endl;
         return;
-    } else {
+    } else {  //Isn't empty
         while(current != NULL){
             if(current->id == id){
                 //Show the product data
@@ -1600,6 +1597,8 @@ void modifyProductState(){
                 cin >> option;
                 cin.ignore();
 
+
+                //Asign the new production stage
                 switch (option)
                 {
                 case 1:
@@ -1630,11 +1629,14 @@ void modifyProductState(){
 }
 
 void deletePr(){
+    //Get ID from the user to delete
+
     //  Get ID
     cout << "Insert the ID of the product you want to delete: ";
     string id;
     getline(cin, id);
 
+    // Delete the product
     deleteProduct(id);
 
     //Back to the production line menu
@@ -1642,6 +1644,8 @@ void deletePr(){
 }
 
 void deleteProduct(const string& idToDelete) {
+    // Delete Product by ID
+
     // Check if the list is empty
     if (headProduct == nullptr) {
         cout << "The list is empty." << endl;
@@ -1651,8 +1655,8 @@ void deleteProduct(const string& idToDelete) {
     Product *current = headProduct;
 
     // Search for the product with the specified ID
-    while (current != nullptr) {
-        if (current->id == idToDelete) {
+    while (current != nullptr) {   //Compaire current with null for verify if the list is empty
+        if (current->id == idToDelete) {  //Search the product with the ID
             // Product found, delete it
 
             // If the product to delete is the first product (headProduct)
@@ -1696,6 +1700,8 @@ void deleteProduct(const string& idToDelete) {
 
 void consultProductionLine()
 {
+    //Principal menu for consult production line
+    
     // Print menu options for consult production line
     cout << endl;
     cout << "Choose the option you want to perform:" << endl;
@@ -1703,7 +1709,7 @@ void consultProductionLine()
     cout << "2 - Consult a specific product" << endl;
     cout << "3 - Consult a specific stage of the production line" << endl;
     cout << "4 - Modify a specific stage of the production line" << endl;
-    cout << "5 - Add New Product in the Production Line - ERROR in this sentence INFINITE LOOP" << endl;
+    cout << "5 - Add New Product in the Production Line " << endl;
     cout << "6 - Delete Product in Product Line" << endl;
     cout << "7 - Close menu" << endl;
 
@@ -1761,7 +1767,9 @@ int main()
 }
 
 void menuMain(){
-        cout << endl;
+    //Principal menu for the program
+
+    cout << endl;
     cout << "Welcome to SiliconLogic - Your Job Information Portal" << endl;   
     cout << "What area of the company would you like to see?:" << endl;
     cout << endl;
