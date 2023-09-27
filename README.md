@@ -2,10 +2,6 @@
 
 Estructuras de Datos project of the II semester of 2023 - Tecnológico de Costa Rica. Using single, double, circular and double-circular lists in the super powerful C++.
 
-### List Diagram
-
-(Image here)
-
 ## Usage
 
 ### Compiling and Running
